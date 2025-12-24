@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Proof of Work Client</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui; padding: 20px; }
+    button { padding: 10px 14px; font-size: 16px; }
+    pre { background: #f4f4f4; padding: 12px; }
+  </style>
+</head>
+<body>
+
+<h2>Proof of Work Client</h2>
+<button onclick="run()">Run PoW</button>
+
+<pre id="out">Idle…</pre>
+
+<script>
+const SERVER_URL = "https://YOUR-SERVICE.onrender.com"; // ← عدّل هذا فقط
+
+function log(x) {
+  document.getElementById("out").textContent = x;
+}
+
+async function sha256(text) {
+  const data = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(hash)]
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function run() {
+  log("Requesting challenge…");
+
+  const challengeRes = await fetch(SERVER_URL + "/challenge");
+  const ch = await challengeRes.json();
+
+  log("Solving challenge…");
+
+  let nonce = null;
+  for (let i = 0; i <= ch.max_number; i++) {
+    const h = await sha256(ch.salt + i);
+    if (h === ch.challenge) {
+      nonce = i;
+      break;
+    }
+  }
+
+  log("Solved! nonce = " + nonce + "\nVerifying…");
+
+  const verifyRes = await fetch(SERVER_URL + "/verify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      salt: ch.salt,
+      challenge: ch.challenge,
+      nonce
+    })
+  });
+
+  const result = await verifyRes.json();
+  log(JSON.stringify(result, null, 2));
+}
+</script>
+
+</body>
+</html>
