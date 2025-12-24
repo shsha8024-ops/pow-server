@@ -1,7 +1,18 @@
+// Proof of Work (SHA-256) demo server
+// Educational project – not production security
+
 import express from "express";
 import crypto from "crypto";
 
 const app = express();
+
+// CORS (ضروري للمتصفح)
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 app.use(express.json());
 
 const MAX = 50000;
@@ -23,6 +34,17 @@ app.get("/challenge", (req, res) => {
   });
 });
 
+app.post("/verify", (req, res) => {
+  const { salt, challenge, nonce } = req.body;
+  const computed = sha256(salt + String(nonce));
+
+  if (computed === challenge) {
+    res.json({ ok: true });
+  } else {
+    res.status(400).json({ ok: false });
+  }
+});
+
 app.listen(3000, () => {
-  console.log("Server running");
+  console.log("PoW server running");
 });
