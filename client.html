@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>PoW Client</title>
+  <title>Proof of Work Client</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body { font-family: system-ui; padding: 20px; }
     button { padding: 10px 14px; font-size: 16px; }
-    pre { background: #f4f4f4; padding: 12px; overflow-x: auto; }
+    pre { background: #f4f4f4; padding: 12px; }
   </style>
 </head>
 <body>
@@ -18,7 +18,7 @@
 <pre id="out">Idle…</pre>
 
 <script>
-const SERVER_URL = "https://YOUR-SERVICE.onrender.com"; // ← غيّره
+const SERVER_URL = "https://YOUR-SERVICE.onrender.com"; // ← عدّل هذا فقط
 
 function log(x) {
   document.getElementById("out").textContent = x;
@@ -47,11 +47,6 @@ async function run() {
       nonce = i;
       break;
     }
-  }
-
-  if (nonce === null) {
-    log("Failed to solve");
-    return;
   }
 
   log("Solved! nonce = " + nonce + "\nVerifying…");
