@@ -1,59 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PoW Client</title>
-    <style>
-        body {
-            font-family: system-ui;
-            padding: 20px;
-        }
-        button {
-            padding: 10px 16px;
-            font-size: 16px;
-        }
-        pre {
-            background: #f4f4f4;
-            padding: 12px;
-            margin-top: 16px;
-            white-space: pre-wrap;
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>TEST</title>
 </head>
-<body>
-
-<h2>PoW Client</h2>
-<button onclick="run()">Run</button>
-
-<pre id="output">Idle…</pre>
-
-<script>
-const SERVER_URL = "https://pow-server.onrender.com";
-
-const output = document.getElementById("output");
-
-function log(text) {
-    output.textContent = text;
-}
-
-async function run() {
-    try {
-        log("Requesting /challenge …");
-
-        const res = await fetch(SERVER_URL + "/challenge");
-        if (!res.ok) {
-            throw new Error("HTTP " + res.status);
-        }
-
-        const data = await res.json();
-        log("Server response:\n\n" + JSON.stringify(data, null, 2));
-
-    } catch (err) {
-        log("Error:\n" + err.message);
-    }
-}
-</script>
-
+<body style="font-family: system-ui; padding: 40px;">
+  <h1>✅ الصفحة تعمل</h1>
+  <p>إذا رأيت هذا النص، فـ GitHub Pages شغّال.</p>
 </body>
 </html>
