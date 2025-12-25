@@ -3,36 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POW Client</title>
+    <title>PoW Client</title>
+    <style>
+        body {
+            font-family: system-ui;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 16px;
+            font-size: 16px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 12px;
+            margin-top: 16px;
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
 <body>
-    <script>
-        // Updated server endpoint configuration
-        const SERVER_URL = "https://pow-server.onrender.com";
 
-        async function run() {
-            try {
-                console.log('Sending request to server:', SERVER_URL);
-                const response = await fetch(SERVER_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ data: 'your_data_here' })
-                });
+<h2>PoW Client</h2>
+<button onclick="run()">Run</button>
 
-                if (!response.ok) {
-                    throw new Error(`Server returned an error: ${response.status} ${response.statusText}`);
-                }
+<pre id="output">Idle…</pre>
 
-                const result = await response.json();
-                console.log('Server response:', result);
-            } catch (error) {
-                console.error('An error occurred during fetch operation:', error);
-            }
+<script>
+const SERVER_URL = "https://pow-server.onrender.com";
+
+const output = document.getElementById("output");
+
+function log(text) {
+    output.textContent = text;
+}
+
+async function run() {
+    try {
+        log("Requesting /challenge …");
+
+        const res = await fetch(SERVER_URL + "/challenge");
+        if (!res.ok) {
+            throw new Error("HTTP " + res.status);
         }
 
-        run();
-    </script>
+        const data = await res.json();
+        log("Server response:\n\n" + JSON.stringify(data, null, 2));
+
+    } catch (err) {
+        log("Error:\n" + err.message);
+    }
+}
+</script>
+
 </body>
 </html>
