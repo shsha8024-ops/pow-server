@@ -1,11 +1,109 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <title>TEST</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🚚 نموذج إضافة بيانات الحمولة + QR</title>
+<style>
+body{font-family:"Noto Naskh Arabic",sans-serif;direction:rtl;background:#f9fafb;color:#111;line-height:1.6;margin:20px}
+h1{text-align:center}
+form{max-width:800px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+label{display:block;margin-top:10px;font-weight:600}
+input,select{width:100%;padding:8px;margin-top:6px;font-size:15px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box}
+button{padding:10px 16px;font-size:15px;margin-top:20px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer}
+button:hover{background:#1e40af}
+pre{background:#f5f5f5;padding:10px;border-radius:8px;overflow:auto}
+#qr{display:flex;justify-content:center;margin-top:20px}
+</style>
 </head>
-<body style="font-family: system-ui; padding: 40px;">
-  <h1>✅ الصفحة تعمل</h1>
-  <p>إذا رأيت هذا النص، فـ GitHub Pages شغّال.</p>
+<body>
+
+<h1>🚚 إضافة بيانات الحمولة وتوليد رمز QR</h1>
+<form id="cargoForm">
+
+<label class="required">اسم سيطرة الدخول</label>
+<select id="chekpointname" required>
+  <option value="">— اختر السيطرة —</option>
+  <option>سيطرة دارمان</option>
+  <option>سيطرة جيمين</option>
+  <option>سيطرة السد</option>
+  <option>سيطرة باوه محمود</option>
+</select>
+
+<label class="required">اسم السائق</label>
+<input type="text" id="DriverName" placeholder="اكتب اسم السائق" required>
+
+<label class="required">رقم العجلة</label>
+<input type="text" id="VehicleNumber" placeholder="مثال: 12A3456" required>
+
+<label class="required">محافظة تسجيل العجلة</label>
+<select id="VehicleRegistrationGovernorate" required>
+  <option value="">— اختر المحافظة —</option>
+  <option>بغداد</option><option>اربيل</option><option>سليمانية</option>
+  <option>دهوك</option><option>نينوى</option><option>كركوك</option>
+  <option>صلاح الدين</option><option>ديالى</option><option>الانبار</option>
+  <option>بابل</option><option>واسط</option><option>الديوانية</option>
+  <option>كربلاء</option><option>النجف</option><option>المثنى</option>
+  <option>ميسان</option><option>ذي قار</option><option>البصرة</option>
+</select>
+
+<label class="required">الوزن / الكمية</label>
+<input type="number" id="WeightQuantity" placeholder="اكتب الكمية أو الوزن" required>
+
+<label class="required">الوجهة النهائية / المحافظة</label>
+<select id="FinalDestinationGovernorate" required>
+  <option value="">— اختر المحافظة —</option>
+  <option>بغداد</option><option>اربيل</option><option>سليمانية</option>
+  <option>دهوك</option><option>نينوى</option><option>كركوك</option>
+  <option>صلاح الدين</option><option>ديالى</option><option>الانبار</option>
+  <option>بابل</option><option>واسط</option><option>الديوانية</option>
+  <option>كربلاء</option><option>النجف</option><option>المثنى</option>
+  <option>ميسان</option><option>ذي قار</option><option>البصرة</option>
+</select>
+
+<button type="button" id="generate">توليد البيانات و QR 📦</button>
+</form>
+
+<h2>📋 الناتج (JSON)</h2>
+<pre id="output"></pre>
+
+<h2>🔳 رمز الاستجابة السريع (QR Code)</h2>
+<div id="qr"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<script>
+document.getElementById('generate').addEventListener('click', () => {
+  const form = {
+    chekpointname: document.getElementById('chekpointname').value,
+    DriverName: document.getElementById('DriverName').value,
+    VehicleNumber: document.getElementById('VehicleNumber').value,
+    VehicleRegistrationGovernorate: document.getElementById('VehicleRegistrationGovernorate').value,
+    WeightQuantity: document.getElementById('WeightQuantity').value,
+    FinalDestinationGovernorate: document.getElementById('FinalDestinationGovernorate').value,
+    TimeStamp: new Date().toISOString()
+  };
+
+  for (const [key, val] of Object.entries(form)) {
+    if (!val) return alert("⚠️ يرجى تعبئة جميع الحقول المطلوبة.");
+  }
+
+  const jsonData = JSON.stringify(form, null, 2);
+  document.getElementById('output').textContent = jsonData;
+
+  // مسح أي رمز سابق
+  const qrContainer = document.getElementById('qr');
+  qrContainer.innerHTML = "";
+
+  // توليد QR جديد
+  new QRCode(qrContainer, {
+    text: jsonData,
+    width: 200,
+    height: 200,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+});
+</script>
 </body>
 </html>
